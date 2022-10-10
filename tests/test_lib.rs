@@ -6,6 +6,7 @@ fn adds_together() {
 }
 
 #[test]
+#[ignore]
 fn fails() {
     assert_eq!(11, 13);
 }
