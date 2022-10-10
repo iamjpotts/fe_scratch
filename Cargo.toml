@@ -1,0 +1,8 @@
+[package]
+name = "fe_scratch"
+description = "Scratch project for trying out stuff with a CI"
+rust-version = "1.64"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
