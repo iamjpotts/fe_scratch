@@ -1,0 +1,37 @@
+
+[advisories]
+ignore = []
+notice = "deny"
+unmaintained = "warn"
+vulnerability = "deny"
+yanked = "deny"
+
+[licenses]
+allow = [
+    "MPL-2.0",
+]
+default = "deny"
+confidence-threshold = 1.0
+unlicensed = "deny"
+
+[bans]
+allow = []
+deny = [
+    # License is non-trivial
+    { name = "ring" },
+]
+multiple-versions = "warn"
+skip = []
+skip-tree = []
+wildcards = "warn"
+
+[sources]
+allow-git = []
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+unknown-git = "deny"
+unknown-registry = "deny"
+
+[sources.allow-org]
+github = []
+gitlab = []
+bitbucket = []
