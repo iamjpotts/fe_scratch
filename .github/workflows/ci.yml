@@ -29,9 +29,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
-          components:
-            - clippy
-            - deny
+          components: "clippy, deny"
           toolchain: ${{ matrix.toolchain }}
       - run: cargo deny check
       - run: cargo clippy
