@@ -11,6 +11,7 @@ allow = [
     "Apache-2.0",
     "MIT",
     "MPL-2.0",
+    "Unicode-DFS-2016",
 ]
 default = "deny"
 confidence-threshold = 1.0
