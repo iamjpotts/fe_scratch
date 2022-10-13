@@ -3,14 +3,13 @@ use std::io::Error;
 use std::path::PathBuf;
 use std::pin::Pin;
 use std::str::FromStr;
-use std::sync::Arc;
 use std::task::{Context, Poll};
 use hyper::{Body, Client, Request, Uri};
 use hyper::client::connect::{Connected, Connection};
 use hyper::rt::Executor;
 use hyper::service::Service;
 use pin_project_lite::pin_project;
-use tokio::fs::File;
+use tokio::fs::{File, OpenOptions};
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
 use fe_scratch::add;
 
@@ -46,8 +45,20 @@ impl Service<Uri> for PipeConnector {
         let path = PathBuf::from(pipe_name);
 
         let future = async move {
+            let path_str = path.to_str().unwrap();
+            println!("Opening {}", path_str);
+
+            let file = OpenOptions::new()
+                .create(false)
+                .read(true)
+                .write(true)
+                .open(&path_str)
+                .await?;
+
+            println!("Opened {:?}", path_str);
+
             Ok(PipeStream {
-                file: File::open(path).await?
+                file
             })
         };
 
@@ -66,6 +77,7 @@ pin_project! {
 impl AsyncRead for PipeStream {
 
     fn poll_read(self: Pin<&mut Self>, cx: &mut Context<'_>, buf: &mut ReadBuf<'_>) -> Poll<std::io::Result<()>> {
+        println!("Poll read");
         self.project().file.poll_read(cx, buf)
     }
 
@@ -74,14 +86,17 @@ impl AsyncRead for PipeStream {
 impl AsyncWrite for PipeStream {
 
     fn poll_write(self: Pin<&mut Self>, cx: &mut Context<'_>, buf: &[u8]) -> Poll<Result<usize, Error>> {
+        println!("Poll write");
         self.project().file.poll_write(cx, buf)
     }
 
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Result<(), Error>> {
+        println!("Poll flush");
         self.project().file.poll_flush(cx)
     }
 
     fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Result<(), Error>> {
+        println!("Poll shutdown");
         self.project().file.poll_shutdown(cx)
     }
 
@@ -89,6 +104,7 @@ impl AsyncWrite for PipeStream {
 
 impl Connection for PipeStream {
     fn connected(&self) -> Connected {
+        println!("Connected");
         Connected::new()
     }
 }
@@ -150,17 +166,25 @@ async fn bar() {
         .pool_max_idle_per_host(123)
         .build::<_, Body>(PipeConnector::default());
 
+    println!("Building request");
+
     let request = Request::get(format!("{}/version", pipe_url_str))
         .body(hyper::Body::empty())
         .unwrap();
+
+    println!("Getting response");
 
     let response = client.request(request)
         .await
         .unwrap();
 
+    println!("Reading body");
+
     let body = hyper::body::to_bytes(response.into_body())
         .await
         .unwrap();
+
+    println!("Converting body to a string");
 
     let body_text = String::from_utf8(body.to_vec())
         .unwrap();
