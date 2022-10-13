@@ -62,8 +62,8 @@ jobs:
           Set-Content -Path "C:\ProgramData\Docker\config\daemon.json" -Value "{`"hosts`": [`"tcp://0.0.0.0:2375`"]}"
       - run: type C:\ProgramData\Docker\config\daemon.json
       - run: C:\Windows\system32\dockerd.exe --help
-      - run: Stop-Service docker  
+      - run: Start-Service docker
       - run: Get-CimInstance Win32_Service -Filter 'Name = "docker"' | Select-Object *
       #- run: cargo test
       - run: cargo b --examples
-      - run: cargo run --example fooey
+      - run: cargo run --example barey
