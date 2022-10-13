@@ -59,7 +59,7 @@ jobs:
       #- run: gwmi -Query "select * from win32_service where pathname like '%$docker%'"
       - run: Get-CimInstance Win32_Service -Filter 'Name = "docker"' | Select-Object *
       - run: |
-          Set-Content -Path "C:\ProgramData\Docker\config\daemon.json" -Value "{`"hosts`": [`"tcp://0.0.0.0:2375`"]}"
+          Set-Content -Path "C:\ProgramData\Docker\config\daemon.json" -Value "{`"hosts`": [`"tcp://127.0.0.1:2375`"]}"
       - run: type C:\ProgramData\Docker\config\daemon.json
       - run: C:\Windows\system32\dockerd.exe --help
       - run: Start-Service docker
