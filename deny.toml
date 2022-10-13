@@ -8,6 +8,8 @@ yanked = "deny"
 
 [licenses]
 allow = [
+    "Apache-2.0",
+    "MIT",
     "MPL-2.0",
 ]
 default = "deny"
