@@ -19,7 +19,7 @@ async fn main() {
     println!("Pipe url: {}", pipe_url_str);
 
     let client: Client<PipeConnector, Body> = Client::builder()
-        .executor(Foo {})
+        //.executor(Foo {})
         .pool_max_idle_per_host(123)
         .build::<_, Body>(PipeConnector::default());
 
