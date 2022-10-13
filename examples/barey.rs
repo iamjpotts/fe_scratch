@@ -1,8 +1,6 @@
-use std::str::FromStr;
 use hyper::{Body, Client, Request};
 use hyper::client::HttpConnector;
 use tokio;
-use fe_scratch::foo::{Foo, PipeConnector};
 
 #[tokio::main]
 async fn main() {
@@ -10,7 +8,7 @@ async fn main() {
 
     let client: Client<HttpConnector, Body> = Client::builder()
         .pool_max_idle_per_host(123)
-        .build::<_, Body>(HttpConnector::default());
+        .build::<_, Body>(HttpConnector::new());
 
     println!("Building request");
 
