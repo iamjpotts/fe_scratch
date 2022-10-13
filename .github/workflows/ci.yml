@@ -52,6 +52,8 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
       #- run: cargo clippy
       - run: docker version
+      - run: docker image ls
+      - run: docker container ls
       #- run: cargo test
       - run: cargo b --examples
       - run: cargo run --example fooey
