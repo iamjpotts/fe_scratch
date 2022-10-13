@@ -3,9 +3,11 @@ use std::io::Error;
 use std::path::PathBuf;
 use std::pin::Pin;
 use std::str::FromStr;
+use std::sync::Arc;
 use std::task::{Context, Poll};
 use hyper::{Body, Client, Request, Uri};
 use hyper::client::connect::{Connected, Connection};
+use hyper::rt::Executor;
 use hyper::service::Service;
 use pin_project_lite::pin_project;
 use tokio::fs::File;
@@ -118,6 +120,18 @@ async fn sewer() {
     println!("Done.");
 }
 
+struct Foo {
+
+}
+
+type BoxSendFuture = Pin<Box<dyn Future<Output = ()> + Send>>;
+
+impl Executor<BoxSendFuture> for Foo {
+    fn execute(&self, fut: BoxSendFuture) {
+        tokio::task::spawn(fut);
+    }
+}
+
 #[tokio::test]
 async fn bar() {
     let pipe_name = "\\\\.\\pipe\\docker_engine";
@@ -132,6 +146,7 @@ async fn bar() {
     println!("Pipe url: {}", pipe_url_str);
 
     let client: Client<PipeConnector, Body> = Client::builder()
+        .executor(Foo {})
         .pool_max_idle_per_host(123)
         .build::<_, Body>(PipeConnector::default());
 
