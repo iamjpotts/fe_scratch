@@ -56,7 +56,8 @@ jobs:
       - run: docker container ls
       #- run: Get-Service
       - run: Stop-Service docker
-      - run: gwmi -Query "select * from win32_service where pathname like '%$docker%'"
+      #- run: gwmi -Query "select * from win32_service where pathname like '%$docker%'"
+      - run: Get-CimInstance Win32_Service -Filter 'Name = "AxInstSV"' | Select-Object *
       #- run: cargo test
       - run: cargo b --examples
       - run: cargo run --example fooey
