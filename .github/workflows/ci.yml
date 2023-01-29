@@ -67,3 +67,23 @@ jobs:
       #- run: cargo test
       - run: cargo b --examples
       - run: cargo run --example barey
+
+  unstable:
+    name: should fail
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        toolchain:
+          - 1.64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          #components: "clippy"
+          toolchain: ${{ matrix.toolchain }}
+      - run: echo Sleeping a minute
+      - run: sleep 60
+      - run: echo About to fail
+      - run: exit 166
