@@ -3,7 +3,7 @@ name = "fe_scratch"
 description = "Scratch project for trying out stuff with a CI"
 license = "MPL-2.0"
 rust-version = "1.64"
-version = "0.0.1"
+version = "0.0.2-alpha"
 edition = "2021"
 
 [dependencies]
